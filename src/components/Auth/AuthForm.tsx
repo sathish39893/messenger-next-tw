@@ -2,16 +2,28 @@
 
 import { useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import axios from 'axios';
+import clsx from 'clsx';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
+import { signIn } from 'next-auth/react';
 import Input from '../FormInputs/Input';
 import Button from '../Button';
 import AuthSocialButton from '../AuthSocialButton';
 
 type Variant = 'LOGIN' | 'REGISTER';
+type Message = {
+  type: MessageType;
+  text: string;
+};
+type MessageType = 'success' | 'error' | 'warning';
 
 const AuthForm = () => {
   const [variant, setVariant] = useState<Variant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<Message>({
+    type: 'success',
+    text: '',
+  });
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
@@ -35,16 +47,46 @@ const AuthForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
+    setMessage({ type: 'success', text: '' });
     if (variant === 'REGISTER') {
-      // Axios Register
+      axios
+        .post('/api/register', data)
+        .catch(() =>
+          setMessage({ type: 'error', text: 'Something went wrong' })
+        )
+        .finally(() => setIsLoading(false));
     }
     if (variant === 'LOGIN') {
-      // Next Auth Sign
+      signIn('credentials', {
+        ...data,
+        redirect: false,
+      })
+        .then((response) => {
+          if (response?.error) {
+            setMessage({ type: 'error', text: 'Invalid credentials' });
+          }
+
+          if (response?.ok && !response.error) {
+            setMessage({ type: 'success', text: 'Logged in' });
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
   const socialAction = (action: string) => {
     setIsLoading(true);
+
+    signIn(action, { redirect: false })
+      .then((response) => {
+        if (response?.error) {
+          setMessage({ type: 'error', text: 'Invalid credentials' });
+        }
+        if (response?.ok && !response?.error) {
+          setMessage({ type: 'success', text: 'Logged in' });
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -80,6 +122,17 @@ const AuthForm = () => {
               {variant === 'LOGIN' ? 'Sign In' : 'Register'}
             </Button>
           </div>
+          {message.text && (
+            <div
+              className={clsx(
+                'mt-4 text-sm',
+                message.type === 'error' && 'text-rose-600',
+                message.type === 'success' && 'text-sky-500'
+              )}
+            >
+              {message.text}
+            </div>
+          )}
         </form>
 
         <div className="mt-6">
