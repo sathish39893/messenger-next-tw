@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import axios from 'axios';
 import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Input from '../FormInputs/Input';
 import Button from '../Button';
 import AuthSocialButton from '../AuthSocialButton';
@@ -18,12 +19,20 @@ type Message = {
 type MessageType = 'success' | 'error' | 'warning';
 
 const AuthForm = () => {
+  const session = useSession();
+  const router = useRouter();
   const [variant, setVariant] = useState<Variant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<Message>({
     type: 'success',
     text: '',
   });
+
+  useEffect(() => {
+    if (session?.status === 'authenticated') {
+      router.push('/users');
+    }
+  }, [session?.status, router]);
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
@@ -68,6 +77,7 @@ const AuthForm = () => {
 
           if (response?.ok && !response.error) {
             setMessage({ type: 'success', text: 'Logged in' });
+            router.push('/users');
           }
         })
         .finally(() => setIsLoading(false));
@@ -84,6 +94,7 @@ const AuthForm = () => {
         }
         if (response?.ok && !response?.error) {
           setMessage({ type: 'success', text: 'Logged in' });
+          router.push('/users');
         }
       })
       .finally(() => setIsLoading(false));
