@@ -70,7 +70,7 @@ const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
             </p>
             {lastMessage?.createdAt && (
               <p
-                className="text-x5
+                className="text-xs
                     text-gray-400 font-light"
               >
                 {format(new Date(lastMessage.createdAt), 'p')}
