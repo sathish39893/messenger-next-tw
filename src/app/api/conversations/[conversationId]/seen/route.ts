@@ -61,7 +61,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
       return NextResponse.json(conversation);
     }
 
-    return new NextResponse('Success');
+    return NextResponse.json(updatedMessage);
   } catch (error: any) {
     console.log(error, 'ERROR_MESSAGE_SEEN');
     return new NextResponse('Internal Error', { status: 500 });
