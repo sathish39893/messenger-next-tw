@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react';
 import Modal from './Modal';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { Dialog } from '@headlessui/react';
-import Button from './Button';
+import Button from '../Button';
 
 interface ConfirmModalProps {
   isOpen: boolean;

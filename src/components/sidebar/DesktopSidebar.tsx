@@ -4,7 +4,7 @@ import { useState } from 'react';
 import DesktopItem from './DesktopItem';
 import { User } from '@prisma/client';
 import Avatar from '../Avatar';
-import SettingsModal from './SettingsModal';
+import SettingsModal from '../modals/SettingsModal';
 
 interface DesktopSidebarProps {
   currentUser: User;

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { CldUploadButton } from 'next-cloudinary';
-import Modal from '../Modal';
+import Modal from './Modal';
 import Input from '../FormInputs/Input';
 import Image from 'next/image';
 import Button from '../Button';
