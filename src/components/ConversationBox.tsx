@@ -51,7 +51,7 @@ const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
       return lastMessage.body;
     }
 
-    return 'Started a converssation';
+    return 'Started a conversation';
   }, [lastMessage?.body, lastMessage?.image]);
   return (
     <div
