@@ -10,23 +10,15 @@ import { signIn, useSession } from 'next-auth/react';
 import Input from '../FormInputs/Input';
 import Button from '../Button';
 import AuthSocialButton from '../AuthSocialButton';
+import { toast } from 'react-hot-toast';
 
 type Variant = 'LOGIN' | 'REGISTER';
-type Message = {
-  type: MessageType;
-  text: string;
-};
-type MessageType = 'success' | 'error' | 'warning';
 
 const AuthForm = () => {
   const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<Message>({
-    type: 'success',
-    text: '',
-  });
 
   useEffect(() => {
     if (session?.status === 'authenticated') {
@@ -56,13 +48,10 @@ const AuthForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    setMessage({ type: 'success', text: '' });
     if (variant === 'REGISTER') {
       axios
         .post('/api/register', data)
-        .catch(() =>
-          setMessage({ type: 'error', text: 'Something went wrong' })
-        )
+        .catch(() => toast.error('Something went wrong'))
         .finally(() => setIsLoading(false));
     }
     if (variant === 'LOGIN') {
@@ -72,12 +61,11 @@ const AuthForm = () => {
       })
         .then((response) => {
           if (response?.error) {
-            setMessage({ type: 'error', text: 'Invalid credentials' });
+            toast.error('Invalid credentials');
           }
 
           if (response?.ok && !response.error) {
-            setMessage({ type: 'success', text: 'Logged in' });
-            router.push('/users');
+            toast.success('Logged In');
           }
         })
         .finally(() => setIsLoading(false));
@@ -90,11 +78,10 @@ const AuthForm = () => {
     signIn(action, { redirect: false })
       .then((response) => {
         if (response?.error) {
-          setMessage({ type: 'error', text: 'Invalid credentials' });
+          toast.error('Invalid credentials!');
         }
         if (response?.ok && !response?.error) {
-          setMessage({ type: 'success', text: 'Logged in' });
-          router.push('/users');
+          toast.success('Logged in');
         }
       })
       .finally(() => setIsLoading(false));
@@ -133,17 +120,6 @@ const AuthForm = () => {
               {variant === 'LOGIN' ? 'Sign In' : 'Register'}
             </Button>
           </div>
-          {message.text && (
-            <div
-              className={clsx(
-                'mt-4 text-sm',
-                message.type === 'error' && 'text-rose-600',
-                message.type === 'success' && 'text-sky-500'
-              )}
-            >
-              {message.text}
-            </div>
-          )}
         </form>
 
         <div className="mt-6">

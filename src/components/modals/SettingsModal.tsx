@@ -10,6 +10,7 @@ import Modal from './Modal';
 import Input from '../FormInputs/Input';
 import Image from 'next/image';
 import Button from '../Button';
+import { toast } from 'react-hot-toast';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -55,7 +56,7 @@ const SettingsModal = ({
         router.refresh();
         onClose();
       })
-      .catch(() => console.log('Something went wrong'))
+      .catch(() => toast.error('Something went wrong'))
       .finally(() => setIsLoading(false));
   };
 
