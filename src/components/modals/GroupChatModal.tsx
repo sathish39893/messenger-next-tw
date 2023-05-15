@@ -9,6 +9,7 @@ import Modal from './Modal';
 import Input from '../FormInputs/Input';
 import Select from '../FormInputs/Select';
 import Button from '../Button';
+import { toast } from 'react-hot-toast';
 
 interface GroupChatModalProps {
   isOpen: boolean;
@@ -46,7 +47,7 @@ const GroupChatModal = ({ isOpen, onClose, users }: GroupChatModalProps) => {
         router.refresh();
         onClose();
       })
-      .catch(() => console.log('Something went wrong'))
+      .catch(() => toast.error('Something went wrong'))
       .finally(() => setIsLoading(false));
   };
 

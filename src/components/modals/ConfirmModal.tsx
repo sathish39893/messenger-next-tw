@@ -8,6 +8,7 @@ import Modal from './Modal';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { Dialog } from '@headlessui/react';
 import Button from '../Button';
+import { toast } from 'react-hot-toast';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const ConfirmModal = ({ isOpen, onClose }: ConfirmModalProps) => {
         router.push('/conversations');
         router.refresh();
       })
-      .catch(() => console.log('Something went wrong'))
+      .catch(() => toast.error('Something went wrong'))
       .finally(() => setIsLoading(false));
   }, [conversationId, onClose, router]);
 
